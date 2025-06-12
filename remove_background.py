@@ -1,18 +1,20 @@
 import cv2
 import numpy as np
 import time
-test_img = cv2.imread("images/Aubergine/PICT_20250604_181550.JPG", cv2.COLOR_BGR2RGB)
+test_img = cv2.imread("images/Tomaten-Cocktail/PICT_20250604_154015.JPG", cv2.COLOR_BGR2RGB)
 
 
-"""
+
+
 def remove_bg(img):
     for i in range(len(img)):
         for j in range(len(img[0])):
-            if np.sum(img[i][j]) < 120 and abs(img[i][j][0] - img[i][j][1]) < 10 and abs(img[i][j][1] - img[i][j][2]) < 10:
-                img[i][j] = [255, 255, 255]
+            r, g, b = [int(x) for x in img[i][j]]
+            if (r + g + b) < 120 and abs(r - g) < 10 and abs(g - b) < 10:
+                img[i][j] = np.array([255, 255, 255], dtype=np.uint8)
+
+
 """
-
-
 def remove_bg(img):
     # Berechne die Summe der RGB-Werte pro Pixel
     sum_rgb = img.sum(axis=2)
@@ -28,7 +30,7 @@ def remove_bg(img):
     img[mask] = [255, 255, 255]
 
     return img
-
+"""
 
 """
 def remove_dots(img):
@@ -69,7 +71,6 @@ def remove_dots(img):
         for i, j in object_l2:
             img[i][j] = [255, 255, 255]
 """
-import numpy as np
 from scipy.ndimage import label
 
 def remove_dots(img):
@@ -88,12 +89,15 @@ def remove_dots(img):
     return img
 
 
-start = time.time_ns()
-remove_dots(test_img)
-end = time.time_ns()
-print((end - start) / 1_000_000_000)
+
 start = time.time_ns()
 remove_bg(test_img)
 end = time.time_ns()
 print((end - start) / 1_000_000_000)
+
+start = time.time_ns()
+remove_dots(test_img)
+end = time.time_ns()
+print((end - start) / 1_000_000_000)
+
 cv2.imwrite("test/img4.jpeg", test_img)
