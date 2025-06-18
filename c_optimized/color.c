@@ -4,7 +4,14 @@
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
+
 #include "color.h"
+
+static int compare_by_count(const void *a, const void *b) {
+    color_idx *c1 = (color_idx *)a;
+    color_idx *c2 = (color_idx *)b;
+    return c2->count - c1->count;
+}
 
 color *get_k_dominant_colors(int k, color *colors) {
     int n = arrlen(colors);
@@ -95,14 +102,39 @@ color *get_k_dominant_colors(int k, color *colors) {
                 res_colors[i].data[j] = new_res_colors[i][j];
             }
         }
+        
+        if (colors_diff < eps || counter > 20) {
+            
+            color_idx temp_res[k];
+            for (int i = 0; i < k; i++) {
+                for (int j = 0; j < 3; j++)  {
+                    temp_res[i].c.data[j] = res_colors[i].data[j];
+                }
+                temp_res[i].count = (int) arrlen(clusters[i]);
+                temp_res[i].idx = i;
+            }
+            qsort(temp_res, k, sizeof(color_idx), compare_by_count);
+
+            for (int i = 0; i < k; i++) {
+                for (int j = 0; j < 3; j++)  {
+                    res_colors[i].data[j] = temp_res[i].c.data[j];
+                }
+            }
+
+            for (int i = 0; i < k; i++) {
+                arrfree(clusters[i]);
+            }
+            arrfree(clusters);
+            break;
+        }
         for (int i = 0; i < k; i++) {
             arrfree(clusters[i]);
         }
         arrfree(clusters);
-        if (colors_diff < eps || counter > 20) {
-            break;
-        }
         
     }
+
+
+
     return res_colors;
 }
