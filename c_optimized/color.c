@@ -4,24 +4,22 @@
 #include <time.h>
 #include <stdbool.h>
 #include <math.h>
-typedef struct {
-    unsigned char data[3];
-} color;
+#include <stdio.h>
+#include "color.h"
 
 color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
     if (k > width * height / 10) {
-        perror("requested to many colors %d\n", k);
+        fprintf(stderr, "Error: Requested too many colors: %d. Maximum suggested: %d\n", k, width * height / 10);
         return NULL;
     }
     color *res_colors = NULL;
     srand(time(NULL));
     int rand_idx[k];
-    int rand_idx_size = 0;
     for (int i = 0; i < k; i++) {
         while (1) {
             int r = rand() % (width * height);
             bool present = false;
-            for (int j = 0; j < rand_idx_size; j++) {
+            for (int j = 0; j < i; j++) {
                 if (r == rand_idx) {
                     present = true;
                     break;
@@ -31,7 +29,6 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
                 continue;
             }
             rand_idx[i] = r;
-            rand_idx_size += 1;
             break;
         }
     }
@@ -43,7 +40,9 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
     }
 
     double eps = 1e-3;
+    int counter = 0;
     while (1) {
+        counter += 1;
         color **clusters = NULL;
         for (int i = 0; i < k; i++) {
             color *row = NULL;
@@ -66,8 +65,8 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
             double min_dist = 1000;
             for (int j = 0; j < k; j++) {
                 double dist = 0;
-                for (int k = 0; k < 3; k++) {
-                    dist += pow(c.data[k] - res_colors[j].data[k], 2);
+                for (int l = 0; l < 3; l++) {
+                    dist += pow(c.data[l] - res_colors[j].data[l], 2);
                 }
                 dist = sqrt(dist);
                 if (dist < min_dist) {
@@ -94,7 +93,7 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
         double colors_diff = 0;
         for (int i = 0; i < k; i++) {
             for (int j = 0; j < 3; j++) {
-                colors_diff += abs(new_res_colors[i][j] - res_colors[i].data[j]);
+                colors_diff += fabs(new_res_colors[i][j] - (double)res_colors[i].data[j]);
                 res_colors[i].data[j] = new_res_colors[i][j];
             }
         }
@@ -102,7 +101,7 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
             arrfree(clusters[i]);
         }
         arrfree(clusters);
-        if (colors_diff < eps) {
+        if (colors_diff < eps || counter > 1000) {
             break;
         }
         
