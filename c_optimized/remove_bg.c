@@ -1,4 +1,3 @@
-#define STB_DS_IMPLEMENTATION
 #include "stb_ds.h"
 #include "remove_bg.h"
 #include <stdlib.h>

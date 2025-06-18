@@ -5,6 +5,6 @@ typedef struct {
     unsigned char data[3];
 } color;
 
-color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
+color *get_k_dominant_colors(int k, color *colors);
 
 #endif // COLOR_H

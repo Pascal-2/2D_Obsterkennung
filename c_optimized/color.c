@@ -1,4 +1,3 @@
-#define STB_DS_IMPLEMENTATION
 #include "stb_ds.h"
 #include <stdlib.h>
 #include <time.h>
@@ -7,9 +6,10 @@
 #include <stdio.h>
 #include "color.h"
 
-color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
-    if (k > width * height / 10) {
-        fprintf(stderr, "Error: Requested too many colors: %d. Maximum suggested: %d\n", k, width * height / 10);
+color *get_k_dominant_colors(int k, color *colors) {
+    int n = arrlen(colors);
+    if (k > n / 10) {
+        fprintf(stderr, "Error: Requested too many colors: %d. Maximum suggested: %d\n", k, n / 10);
         return NULL;
     }
     color *res_colors = NULL;
@@ -17,10 +17,10 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
     int rand_idx[k];
     for (int i = 0; i < k; i++) {
         while (1) {
-            int r = rand() % (width * height);
+            int r = rand() % n;
             bool present = false;
             for (int j = 0; j < i; j++) {
-                if (r == rand_idx) {
+                if (r == rand_idx[j]) {
                     present = true;
                     break;
                 }
@@ -34,12 +34,11 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
     }
 
     for (int i = 0; i < k; i++) {
-        int t_idx1 = rand_idx[i]*3;
-        color temp1 = {img[t_idx1], img[t_idx1+1], img[t_idx1+2]};
+        color temp1 = {{colors[rand_idx[i]].data[0], colors[rand_idx[i]].data[1], colors[rand_idx[i]].data[2]}};
         arrput(res_colors, temp1);
     }
 
-    double eps = 1e-3;
+    double eps = 1;
     int counter = 0;
     while (1) {
         counter += 1;
@@ -58,10 +57,9 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
             }
         }
 
-        for (int i = 0; i < width * height; i++) {
-            int t_idx2 = i * 3;
-            color c = {img[t_idx2], img[t_idx2+1], img[t_idx2+2]};
-            int min_dist_color_idx;
+        for (int i = 0; i < n; i++) {
+            color c = {{colors[i].data[0], colors[i].data[1], colors[i].data[2]}};
+            int min_dist_color_idx = 0;
             double min_dist = 1000;
             for (int j = 0; j < k; j++) {
                 double dist = 0;
@@ -93,7 +91,7 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
         double colors_diff = 0;
         for (int i = 0; i < k; i++) {
             for (int j = 0; j < 3; j++) {
-                colors_diff += fabs(new_res_colors[i][j] - (double)res_colors[i].data[j]);
+                colors_diff += abs((int)new_res_colors[i][j] - res_colors[i].data[j]);
                 res_colors[i].data[j] = new_res_colors[i][j];
             }
         }
@@ -101,7 +99,7 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
             arrfree(clusters[i]);
         }
         arrfree(clusters);
-        if (colors_diff < eps || counter > 1000) {
+        if (colors_diff < eps || counter > 20) {
             break;
         }
         

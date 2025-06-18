@@ -9,7 +9,7 @@ stb_image_write.h
 stb_image.h
 
 compilation command:
-gcc -Ofast -march=native -flto=auto -funroll-loops -fno-math-errno -Wall -Wextra -Werror -Wpedantic -std=gnu17 -o main main.c remove_bg.c -lm
+gcc -Ofast -march=native -flto=auto -funroll-loops -fno-math-errno -Wall -Wextra -Werror -Wpedantic -std=gnu17 -o main main.c remove_bg.c color.c -lm
 """
 
 def remove_bg(img, out_img):
