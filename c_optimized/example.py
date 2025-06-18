@@ -12,14 +12,30 @@ compilation command:
 gcc -Ofast -march=native -flto=auto -funroll-loops -fno-math-errno -Wall -Wextra -Werror -Wpedantic -std=gnu17 -o main main.c remove_bg.c color.c -lm
 """
 
-def remove_bg(img, out_img):
+def remove_bg(img_path, out_img_path):
     try:
-        subprocess.run(["./main", "0", img, out_img], check=True)
+        subprocess.run(["./main", "0", img_path, out_img_path], check=True)
         print("Image processed successfully.")
     except subprocess.CalledProcessError as e:
         print("Error during image processing:", e)
 
-input_path = "PICT_20250604_171910.JPG"
-output_path = "see.jpg"
+def k_means_colors(k, img_path):
+    try:
+        res = subprocess.run(["./main", "1", str(k), img_path], stdout=subprocess.PIPE, text=True)
+        print(res.stdout)
+    except subprocess.CalledProcessError as e:
+        print("Error during image processing:", e)
 
-remove_bg(input_path, output_path)
+def test_bg():
+    input_path = "PICT_20250604_171910.JPG"
+    output_path = "see.jpg"
+
+    remove_bg(input_path, output_path)
+
+
+def test_k_means_colors():
+    input_path = "PICT_20250604_171910.JPG"
+    k = 5
+    k_means_colors(k, input_path)
+
+test_k_means_colors()
