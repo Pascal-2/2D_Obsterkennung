@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include <math.h>
 typedef struct {
     unsigned char data[3];
 } color;
@@ -12,9 +13,9 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
         perror("requested to many colors %d\n", k);
         return NULL;
     }
-    color *res_colors = NULL;
+    color res_colors[k];
     srand(time(NULL));
-    int *rand_idx = NULL;
+    int rand_idx[k];
     for (int i = 0; i < k; i++) {
         while (1) {
             int r = rand() % (width * height);
@@ -28,21 +29,45 @@ color *get_k_dominant_colors(int k, unsigned char *img, int width, int height) {
             if (present) {
                 continue;
             }
-            arrput(rand_idx, r);
+            rand_idx[i] = r;
             break;
         }
     }
 
     for (int i = 0; i < k; i++) {
         color temp1 = {img[rand_idx[i]], img[rand_idx[i]+1], img[rand_idx[i]+2]};
-        arrput(res_colors, temp1);
+        res_colors[i] = temp1;
     }
-
-    arrfree(rand_idx);
 
     double eps = 1e-3;
     while (1) {
         color **clusters = NULL;
+        for (int i = 0; i < k; i++) {
+            color *row = NULL;
+            arrput(clusters, row);
+        }
+
+        double *
+
+        for (int i = 0; i < width * height; i++) {
+            color c = {img[i], img[i+1], img[i+2]};
+            int min_dist_color_idx;
+            double min_dist = 1000;
+            for (int j = 0; j < k; j++) {
+                double dist = 0;
+                for (int k = 0; k < 3; k++) {
+                    dist += pow(c.data[k] - res_colors[j].data[k], 2);
+                }
+                dist = sqrt(dist);
+                if (dist < min_dist) {
+                    min_dist = dist;
+                    min_dist_color_idx = j;
+                }
+            }
+            arrput(clusters[min_dist_color_idx], c);
+        }
+
+        
         
     }
 
