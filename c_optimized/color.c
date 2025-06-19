@@ -20,7 +20,7 @@ color *get_k_dominant_colors(int k, color *colors) {
         return NULL;
     }
     color *res_colors = NULL;
-    srand(time(NULL));
+    
     int rand_idx[k];
     for (int i = 0; i < k; i++) {
         while (1) {

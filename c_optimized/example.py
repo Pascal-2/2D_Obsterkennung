@@ -14,17 +14,16 @@ gcc -Ofast -march=native -flto=auto -funroll-loops -fno-math-errno -Wall -Wextra
 
 def remove_bg(img_path, out_img_path):
     try:
-        subprocess.run(["./main", "0", img_path, out_img_path], check=True)
-        print("Image processed successfully.")
+        subprocess.run(["./c_optimized/main", "0", img_path, out_img_path], check=True)
     except subprocess.CalledProcessError as e:
         print("Error during image processing:", e)
 
 def k_means_colors(k, img_path):
     try:
-        res = subprocess.run(["./main", "1", str(k), img_path], stdout=subprocess.PIPE, text=True)
-        print(res.stdout)
+        res = subprocess.run(["./c_optimized/main", "1", str(k), img_path], stdout=subprocess.PIPE, text=True)
+        return res.stdout
     except subprocess.CalledProcessError as e:
-        print("Error during image processing:", e)
+        return "Error during image processing:"
 
 def test_bg():
     input_path = "PICT_20250604_171910.JPG"
@@ -37,5 +36,3 @@ def test_k_means_colors():
     input_path = "PICT_20250604_171910.JPG"
     k = 5
     k_means_colors(k, input_path)
-
-test_k_means_colors()
