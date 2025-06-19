@@ -1,6 +1,13 @@
 {
     "files.associations": {
         "stdlib.h": "c",
-        "stb_ds.h": "c"
+        "stb_ds.h": "c",
+        "color.h": "c",
+        "remove_bg.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "span": "c",
+        "stdbool.h": "c"
     }
 }

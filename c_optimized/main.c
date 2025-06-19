@@ -7,10 +7,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "remove_bg.h"
 #include "color.h"
 
 int main(int argc, char **argv) {
+    srand(time(NULL));
     if (argc < 2) {
         fprintf(stderr, "Usage: %s <id> <parameters>\n", argv[0]);
         return 1;
