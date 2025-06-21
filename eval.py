@@ -2,7 +2,7 @@ from c_optimized.example import remove_bg, k_means_colors
 import os
 import json
 
-def create_color_dataset():
+def create_color_dataset(k):
 
     categories = os.listdir("images")
 
@@ -17,9 +17,9 @@ def create_color_dataset():
         for img_path in test_data_paths:
             l_path2 = l_path1 + "/" + img_path
             remove_bg(l_path2, "temp/todel.png")
-            colors = k_means_colors(5, "temp/todel.png")
+            colors = k_means_colors(k, "temp/todel.png")
             colors = [[int(y) for y in x.split(", ")] for x in colors.strip().split("\n")]
-            print(colors)
+            #print(colors)
             color_dataset[category].append(colors)
             os.remove("temp/todel.png")
 
@@ -34,10 +34,11 @@ def read_color_dataset():
 
 def color_dist(c1, c2):
     dist = 0
+    weights = [70, 30]
     for i in range(len(c1)):
         for j in range(3):
             diff = c1[i][j] - c2[i][j]
-            dist += diff * diff
+            dist += (diff * diff) * (weights[i] / 100)
     return dist
 def get_k_nearest(k, colors):
     color_dataset = read_color_dataset()
@@ -58,7 +59,7 @@ def get_k_nearest(k, colors):
 
 
 
-def get_accurary():
+def get_accurary(k):
 
     categories = os.listdir("images")
     correct_count = 0
@@ -72,15 +73,20 @@ def get_accurary():
         for img_path in test_data_paths:
             l_path2 = l_path1 + "/" + img_path
             remove_bg(l_path2, "temp/todel.png")
-            colors = k_means_colors(5, "temp/todel.png")
+            colors = k_means_colors(k, "temp/todel.png")
             colors = [[int(y) for y in x.split(", ")] for x in colors.strip().split("\n")]
-            res = get_k_nearest(5, colors)
+            res = get_k_nearest(k, colors)
             if res == category:
                 correct_count += 1
+            #else:
+                #print("expected: ", category, "but was: ", res, )
             total += 1
-            print(correct_count, total)
+            #print(correct_count, total)
             os.remove("temp/todel.png")
     
-    print(correct_count / total)
+    print(k, correct_count / total)
 
-get_accurary()
+
+get_accurary(2)
+
+
