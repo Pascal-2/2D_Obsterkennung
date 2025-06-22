@@ -59,7 +59,7 @@ def get_k_nearest(k, colors):
 
 
 
-def get_accurary(k):
+def get_accurary(k, lim):
 
     categories = os.listdir("images")
     correct_count = 0
@@ -75,11 +75,11 @@ def get_accurary(k):
             remove_bg(l_path2, "temp/todel.png")
             colors = k_means_colors(k, "temp/todel.png")
             colors = [[int(y) for y in x.split(", ")] for x in colors.strip().split("\n")]
-            res = get_k_nearest(k, colors)
+            res = get_k_nearest(lim, colors)
             if res == category:
                 correct_count += 1
-            #else:
-                #print("expected: ", category, "but was: ", res, )
+            else:
+                print("expected: ", category, "but was: ", res, )
             total += 1
             #print(correct_count, total)
             os.remove("temp/todel.png")
@@ -87,6 +87,7 @@ def get_accurary(k):
     print(k, correct_count / total)
 
 
-get_accurary(2)
+#create_color_dataset(2)
+get_accurary(2, 2)
 
 
