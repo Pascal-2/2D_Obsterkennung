@@ -1,13 +1,3 @@
-{
-    "files.associations": {
-        "stdlib.h": "c",
-        "stb_ds.h": "c",
-        "color.h": "c",
-        "remove_bg.h": "c",
-        "array": "c",
-        "string": "c",
-        "string_view": "c",
-        "span": "c",
-        "stdbool.h": "c"
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:814aac4a5c88fc6cb2e21cf74a36e9d1de962ba9fea0126418b163a0ea5f1e0a
+size 258

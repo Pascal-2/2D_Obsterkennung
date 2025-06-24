@@ -10,6 +10,7 @@
 #include <time.h>
 #include "remove_bg.h"
 #include "color.h"
+#include "texture.h"
 
 int main(int argc, char **argv) {
     srand(time(NULL));
@@ -69,6 +70,44 @@ int main(int argc, char **argv) {
             stbi_image_free(img);
             break;
         }
+
+        case 2: {
+            int width, height, channels;
+            unsigned char* img = stbi_load(argv[2], &width, &height, &channels, 3);
+            unsigned char* bw_img = make_gray(img, width, height);
+            float **m = get_GLCM_matrix(bw_img, width, height);
+
+            for (int i = 0; i < 256; i++) {
+                for (int j = 0; j < 255; j++) {
+                    printf("%f;", m[i][j]);
+                }
+                printf("%f", m[i][255]);
+                printf("\n");
+            }
+            free(img);
+            free(bw_img);
+            for (int i = 0; i < 256; i++) {
+                free(m[i]);
+            }
+            free(m);
+            break;
+        }
+
+        case 3: {
+            int width, height, channels;
+            unsigned char* img = stbi_load(argv[2], &width, &height, &channels, 3);
+            unsigned char* bw_img = make_gray(img, width, height);
+            float *hist = get_LBP(bw_img, width, height);
+
+            for (int j = 0; j < 255; j++) {
+                printf("%f;", hist[j]);
+            }
+            printf("%f", hist[255]);
+            free(hist);
+            free(img);
+            free(bw_img);
+            break;
+        }
             
         default:
             fprintf(stderr, "Unsupported operation id: %d\n", id);
@@ -78,3 +117,4 @@ int main(int argc, char **argv) {
     
     return 0;
 }
+

@@ -1,4 +1,4 @@
-from c_optimized.example import remove_bg, k_means_colors
+from c_optimized.optimized_lib import remove_bg, k_means_colors
 import os
 import json
 

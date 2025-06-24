@@ -138,3 +138,4 @@ color *get_k_dominant_colors(int k, color *colors) {
 
     return res_colors;
 }
+

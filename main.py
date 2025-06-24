@@ -1,15 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
 #Bilder sortieren
 import os
 import shutil
