@@ -62,7 +62,7 @@ def build_dataset_general(fun, dataset_name):
     counter = 0
     for category in categories:
         if category == "background":
-            continue#
+            continue
         my_dataset[category] = []
         l_path1 = "images/" + category + "/train"
         test_data_paths = os.listdir(l_path1)

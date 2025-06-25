@@ -1,3 +1,5 @@
+# uv run -m debugpy --listen 5678 --wait-for-client statistic.py
+
 from c_optimized.optimized_lib import build_dataset_general, remove_bg
 import cv2
 import os
@@ -41,7 +43,7 @@ def get_flaechenmasse_no_opt(img_path):
                 continue
             faeche += 1
             for k in range(3):
-                mean_color[k] += img[i][j][k]
+                mean_color[k] += int(img[i][j][k])
             for di, dj in d:
                 ni = i + di
                 nj = j + dj
@@ -51,12 +53,14 @@ def get_flaechenmasse_no_opt(img_path):
             
     for i in range(3):
         mean_color[i] /= faeche
-    
+    print(img_path)
     weight = int(img_path[img_path.rfind("_") + 1:img_path.rfind(".")])
 
-    rundheit = (4 * math.pi) * (faeche / (umfang ** 2))
-
-    return (faeche, weight, mean_color, umfang, rundheit)
+    kompaktheit = (faeche / (umfang ** 2))
+    rundheit = (4 * math.pi) * kompaktheit
+    
+    print((faeche, weight, mean_color, umfang, rundheit, kompaktheit))
+    return (faeche, weight, mean_color, umfang, rundheit, kompaktheit)
 
 
 def add_weights():
