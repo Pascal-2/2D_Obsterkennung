@@ -4,6 +4,7 @@ from c_optimized.optimized_lib import build_dataset_general, remove_bg
 import cv2
 import os
 import math
+import decisionTree
 
 def flaechenmasse(f, m):
     if f == 0:
@@ -32,7 +33,7 @@ def get_flaechenmasse_no_opt(img_path):
     remove_bg(img_path, t_path)
     img = cv2.imread(t_path)
 
-    faeche = 0
+    flaeche = 0
     mean_color = [0, 0, 0]
     umfang = 0
     
@@ -41,7 +42,7 @@ def get_flaechenmasse_no_opt(img_path):
         for j in range(len(img[0])):
             if img[i][j][0] == 255 and img[i][j][1] == 255 and img[i][j][2] == 255:
                 continue
-            faeche += 1
+            flaeche += 1
             for k in range(3):
                 mean_color[k] += int(img[i][j][k])
             for di, dj in d:
@@ -52,15 +53,15 @@ def get_flaechenmasse_no_opt(img_path):
                         umfang += 1
             
     for i in range(3):
-        mean_color[i] /= faeche
+        mean_color[i] /= flaeche
     print(img_path)
     weight = int(img_path[img_path.rfind("_") + 1:img_path.rfind(".")])
 
-    kompaktheit = (faeche / (umfang ** 2))
+    kompaktheit = (flaeche / (umfang ** 2))
     rundheit = (4 * math.pi) * kompaktheit
     
-    print((faeche, weight, mean_color, umfang, rundheit, kompaktheit))
-    return (faeche, weight, mean_color, umfang, rundheit, kompaktheit)
+    print((flaeche, weight, *mean_color, umfang, rundheit, kompaktheit))
+    return (flaeche, weight, *mean_color, umfang, rundheit, kompaktheit)
 
 
 def add_weights():
@@ -82,4 +83,37 @@ def add_weights():
 
 
 
-build_dataset_general(get_flaechenmasse_no_opt, "stat")
+#build_dataset_general(get_flaechenmasse_no_opt, "stat")
+
+
+def get_accurary(tree):
+
+    categories = os.listdir("images")
+    correct_count = 0
+    total = 0
+    for category in categories:
+        
+        if category == "background":
+            continue
+        l_path1 = "images/" + category + "/test"
+        test_data_paths = os.listdir(l_path1)
+        for img_path in test_data_paths:
+            l_path2 = l_path1 + "/" + img_path
+            stat = get_flaechenmasse_no_opt(l_path2)
+            prediction = decisionTree.predict_sample(tree, stat)
+            if prediction == category:
+                correct_count += 1
+            else:
+                print("expected: ", category, "but was: ", prediction)
+            total += 1
+            os.remove("temp/todel.png")
+    
+    print(correct_count / total)
+
+
+dataset_name = "stat"
+dataset = decisionTree.get_dataset(dataset_name)
+root = decisionTree.build_tree(dataset, max_depth=5, min_samples_split=2)
+
+
+get_accurary(root)
