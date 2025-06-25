@@ -1,6 +1,5 @@
 import math
 import random
-from bg_ai import remove_bg_vectorized, remove_dots_optimized
 import cv2
 
 
@@ -37,25 +36,4 @@ def get_k_dominant_colors(k, colors):
 
     return clusters
 
-
-test_img = cv2.imread("images/Zucchini/PICT_20250604_155938.JPG", cv2.COLOR_BGR2RGB)
-
-remove_bg_vectorized(test_img)
-remove_dots_optimized(test_img)
-
-
-
-colors = []
-
-for row in test_img:
-    for px in row:
-        if px[0] != 255 and px[1] != 255 and px[2] != 255:
-            colors.append([int(x) for x in px])
-
-domi = get_k_dominant_colors(5, colors)
-
-print(domi)
-
-for x in domi:
-    print([round(y) for y in x[::-1]])
 

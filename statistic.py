@@ -83,7 +83,7 @@ def add_weights():
 
 
 
-#build_dataset_general(get_flaechenmasse_no_opt, "stat")
+build_dataset_general(get_flaechenmasse_no_opt, "stat")
 
 
 def get_accurary(tree):
@@ -111,9 +111,9 @@ def get_accurary(tree):
     print(correct_count / total)
 
 
-dataset_name = "stat"
-dataset = decisionTree.get_dataset(dataset_name)
-root = decisionTree.build_tree(dataset, max_depth=5, min_samples_split=2)
+#dataset_name = "stat"
+#dataset = decisionTree.get_dataset(dataset_name)
+#root = decisionTree.build_tree(dataset, max_depth=5, min_samples_split=2)
 
 
-get_accurary(root)
+#get_accurary(root)

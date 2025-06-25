@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
                 return 1;
             }
             remove_background(img, width, height);
-            if (!stbi_write_jpg(argv[3], width, height, 3, img, 90)) {
+            if (!stbi_write_png(argv[3], width, height, 3, img, width * 3)) {
                 fprintf(stderr, "Failed to write output image\n");
                 stbi_image_free(img);
                 return 1;
