@@ -40,6 +40,7 @@ def color_dist(c1, c2):
             diff = c1[i][j] - c2[i][j]
             dist += (diff * diff) * (weights[i] / 100)
     return dist
+
 def get_k_nearest(k, colors):
     color_dataset = read_color_dataset()
 
@@ -47,10 +48,11 @@ def get_k_nearest(k, colors):
 
     for key, v in color_dataset.items():
         for data_colors in v:
-            ranking.append((key, color_dist(colors, data_colors)))
+            ranking.append((key, color_dist(colors, data_colors), data_colors))
     
     ranking.sort(key=lambda x:x[1])
     res_d = dict()
+    print(ranking[:k])
     for entry in ranking[:k]:
         res_d[entry[0]] = res_d.get(entry[0], 0) + 1
 
@@ -79,7 +81,8 @@ def get_accurary(k, lim):
             if res == category:
                 correct_count += 1
             else:
-                print("expected: ", category, "but was: ", res, )
+                print("expected: ", category, "but was: ", res)
+                print(colors)
             total += 1
             #print(correct_count, total)
             os.remove("temp/todel.png")
