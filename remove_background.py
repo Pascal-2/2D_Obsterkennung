@@ -10,7 +10,7 @@ def remove_bg(img):
     for i in range(len(img)):
         for j in range(len(img[0])):
             r, g, b = [int(x) for x in img[i][j]]
-            if (r + g + b) < 120 and abs(r - g) < 10 and abs(g - b) < 10:
+            if (r + g + b) < 120 and abs(r - g) < 10 and abs(g - b) < 10 and abs(r - b) < 10:
                 img[i][j] = np.array([255, 255, 255], dtype=np.uint8)
 
 

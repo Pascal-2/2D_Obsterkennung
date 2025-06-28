@@ -108,6 +108,17 @@ int main(int argc, char **argv) {
             free(bw_img);
             break;
         }
+
+        case 4: {
+            int k = atoi(argv[2]);
+            const char *el = argv[3];
+            const char *dataset_name = argv[4];
+            char *k_nearest = k_nearest_neighbor_optimized(k, el, dataset_name);
+
+            printf("Ergebnis: %s\n", k_nearest);
+            free(k_nearest);
+            break;
+        }
             
         default:
             fprintf(stderr, "Unsupported operation id: %d\n", id);

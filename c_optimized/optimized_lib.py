@@ -54,6 +54,13 @@ def get_LBP_optimized(img_path):
         return [float(x) for x in res.stdout.split(";")]
     except subprocess.CalledProcessError as e:
         return None
+    
+def k_nearest_neighbor_optimized(k, el, dataset_name):
+    try:
+        res = subprocess.run(["./c_optimized/main", "4", k, el, dataset_name], stdout=subprocess.PIPE, text=True)
+        return [float(x) for x in res.stdout.split(";")]
+    except subprocess.CalledProcessError as e:
+        return None
 
 def build_dataset_general(fun, dataset_name):
     categories = os.listdir("images")

@@ -18,8 +18,9 @@ void remove_background(unsigned char *in_image, int width, int height) {
         int sum = in_image[i] + in_image[i + 1] + in_image[i + 2];
         int diff1 = abs(in_image[i] - in_image[i + 1]);
         int diff2 = abs(in_image[i + 1] - in_image[i + 2]);
+        int diff3 = abs(in_image[i + 2] - in_image[i]);
 
-        if (sum < 120 && diff1 < 10 && diff2 < 10) {
+        if (sum < 120 && diff1 < 10 && diff2 < 10 && diff3 < 10) {
             in_image[i] = in_image[i + 1] = in_image[i + 2] = 255;
         }
     }
