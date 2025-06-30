@@ -11,7 +11,7 @@ stb_image_write.h
 stb_image.h
 
 compilation command:
-gcc -O3 -march=native -flto=auto -funroll-loops -fno-math-errno -Wall -Wextra -Werror -Wpedantic -std=gnu17 -o main main.c remove_bg.c color.c texture.c -lm
+gcc -O3 -march=native -flto=auto -funroll-loops -fno-math-errno -Wall -Wextra -Werror -Wpedantic -std=gnu17 -o main main.c remove_bg.c color.c texture.c cJSON.c -lm
 """
 
 def remove_bg(img_path, out_img_path):
@@ -57,8 +57,8 @@ def get_LBP_optimized(img_path):
     
 def k_nearest_neighbor_optimized(k, el, dataset_name):
     try:
-        res = subprocess.run(["./c_optimized/main", "4", k, el, dataset_name], stdout=subprocess.PIPE, text=True)
-        return [float(x) for x in res.stdout.split(";")]
+        res = subprocess.run(["./c_optimized/main", "4", str(k), str(el), dataset_name], stdout=subprocess.PIPE, text=True)
+        return res.stdout.strip() #[float(x) for x in res.stdout.split(";")]
     except subprocess.CalledProcessError as e:
         return None
 

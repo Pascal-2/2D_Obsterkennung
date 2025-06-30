@@ -111,11 +111,26 @@ int main(int argc, char **argv) {
 
         case 4: {
             int k = atoi(argv[2]);
-            const char *el = argv[3];
+            //float *eval_lbp = (float*) argv[3];
+            //float **eval_glcm = (float**) argv[4];
             const char *dataset_name = argv[4];
-            char *k_nearest = k_nearest_neighbor_optimized(k, el, dataset_name);
+            char *k_nearest = NULL;
 
-            printf("Ergebnis: %s\n", k_nearest);
+            if (strcmp(dataset_name, "lbp") == 0) {
+                float *eval_lbp = (float*) argv[3];
+                k_nearest = k_nearest_neighbor_optimized(k, eval_lbp, dataset_name);
+            } else if (strcmp(dataset_name, "glcm") == 0) {
+                float **eval_glcm = (float**) argv[3];
+                //printf("%f\n", eval_glcm);
+
+                k_nearest = k_nearest_neighbor_optimized(k, eval_glcm, dataset_name);
+            } else {
+                // Fehlerbehandlung für unbekannten Datensatz
+            }
+            
+            //char *k_nearest = k_nearest_neighbor_optimized(k, eval_lbp, eval_glcm, dataset_name);
+
+            printf("%s\n", k_nearest);
             free(k_nearest);
             break;
         }

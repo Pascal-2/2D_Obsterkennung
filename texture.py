@@ -1,3 +1,5 @@
+import time
+
 import cv2
 from c_optimized.optimized_lib import remove_bg
 import matplotlib
@@ -5,7 +7,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import os
 import json
-from c_optimized.optimized_lib import get_GLCM_matrix_optimized, get_LBP_optimized, build_dataset_general, k_nearest_neighbour
+from c_optimized.optimized_lib import get_GLCM_matrix_optimized, get_LBP_optimized, build_dataset_general, k_nearest_neighbour, k_nearest_neighbor_optimized
 
 # Gray Level Co-occurrence Matrix (GLCM)
 def get_GLCM_matrix(img):
@@ -81,28 +83,29 @@ out_path = "temp/testToDel.png"
 
 remove_bg(path, out_path)
 
-test = cv2.imread(out_path, cv2.IMREAD_GRAYSCALE)
+#test = cv2.imread(out_path, cv2.IMREAD_GRAYSCALE)
 
-g_m = get_GLCM_matrix(test)
-
-g_p = get_LBP(test)
+#g_m = get_GLCM_matrix(test)
+#g_p = get_LBP(test)
 
 
 
 #plt.imshow(g_m, cmap="gray")
 #plt.show()
 
-#plt.bar(list(range(256)), g_p)
-#plt.show()
+#fig, ax = plt.subplots(figsize=(16, 9))
+#ax.bar(range(256), g_p)
+#fig.savefig("temp/lpb_hist.png", dpi=100, bbox_inches="tight")
+
 
 #build_dataset_general(get_GLCM_matrix_optimized, "glcm")
 #build_dataset_general(get_LBP_optimized, "lbp")
 
 #res = k_nearest_neighbour_optimized(5, g_m, compare_GLCM, "glcm")
-#res = k_nearest_neighbour(5, g_p, diff_between_LBP, "lbp")
+#res = k_nearest_neighbour(1, g_p, diff_between_LBP, "lbp")
 
 
-def get_accurary(k, lim):
+def get_accurary(k):
 
     categories = os.listdir("images")
     correct_count = 0
@@ -116,7 +119,9 @@ def get_accurary(k, lim):
         for img_path in test_data_paths:
             l_path2 = l_path1 + "/" + img_path
             lbc = get_GLCM_matrix_optimized(l_path2)
-            res = k_nearest_neighbour(8, lbc, compare_GLCM, "glcm")
+            #res = k_nearest_neighbor_optimized(k, lbc, "lbp")
+            res = k_nearest_neighbor_optimized(k, lbc, "glcm")
+            #res = k_nearest_neighbour(k, lbc, compare_GLCM, "glcm")
             if res == category:
                 correct_count += 1
                 print(correct_count, total)
@@ -126,4 +131,6 @@ def get_accurary(k, lim):
 
     print(k, correct_count / total)
 
-get_accurary(2, 2)
+timer = time.time()
+get_accurary(5)
+print(time.time() - timer)
